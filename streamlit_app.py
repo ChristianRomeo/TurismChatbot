@@ -12,8 +12,6 @@ index_name = "texst1"
 PINECONE_KEY = st.secrets["PINECONE_KEY"]
 if PINECONE_KEY is None:
     raise ValueError("Pinecone key not found. Please set the PINECONE_KEY environment variable.")
-else:
-    st.write(PINECONE_KEY)
   
 pinecone.init(api_key=PINECONE_KEY, environment="gcp-starter")
 
