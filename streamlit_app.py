@@ -72,6 +72,8 @@ def main():
         except Exception as e:
             st.error(f"An error occurred: {e}")
             response = "I'm sorry, there was an error generating a response."
+            # Output the exception for debugging purposes
+            st.write(e)  # Or use `st.exception(e)` to display the full traceback
 
     # Output the response and append it to the history
     if response:
