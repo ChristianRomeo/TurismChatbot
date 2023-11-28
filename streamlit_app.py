@@ -30,7 +30,7 @@ system_prompt = (
 "cultural events, local cuisine, accommodations, transportation options, and hidden gems. "
 "It offers up-to-date and personalized information to help tourists make the most of their trip."
 )
-index = pinecone.GRPCIndex(index_name)
+index = pinecone.Index(index_name)
 
 # Streamlit app
 def main():
