@@ -110,3 +110,9 @@ while True:
 
 
 print("Complete")
+
+# questions to evaluate
+# 1. What is the best time to visit Paris?
+#LLAMAINDEX for alternatives for report in case
+# data processing
+
