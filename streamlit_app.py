@@ -17,7 +17,7 @@ else:
   
 pinecone.init(api_key=PINECONE_KEY, environment="gcp-starter")
 
-OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
+OPENAI_API_KEY = st.secrets["openai"]["OPENAI_API_KEY"]
 if OPENAI_API_KEY is None:
     raise ValueError("OpenAI key not found. Please set the OPENAI_API_KEY environment variable.")
   
