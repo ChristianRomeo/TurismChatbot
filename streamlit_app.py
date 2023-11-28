@@ -36,36 +36,43 @@ index = pinecone.GRPCIndex(index_name)
 def main():
     st.title("Question Answering with Pinecone and GPT-3")
 
-    # Load dataset
-    dataset = load_dataset("jayantdocplix/falcon-small-test-dataset")
-    df = dataset['train'].to_pandas().head(50)
+    with st.spinner("Loading dataset..."):
+        # Load dataset
+        dataset = load_dataset("jayantdocplix/falcon-small-test-dataset")
+        df = dataset['train'].to_pandas().head(50)
 
-    # Initialize text splitter and tokenizer
-    text_splitter = CharacterTextSplitter.from_huggingface_tokenizer(GPT2TokenizerFast.from_pretrained("gpt2-xl"), chunk_overlap=50)
+    # ... (other setup)
 
-      # Initialize the session state for history if it doesn't exist
-    if 'history' not in st.session_state:
-        st.session_state.history = []
-        
-    # Process dataset
-    df['text'] = df['text'].apply(text_splitter.split_text)
-    flattened_texts = [text for sublist in df['text'].tolist() for text in sublist]
-    embed = OpenAIEmbeddings(api_key=OPENAI_API_KEY).embed_documents(flattened_texts)
-    
-    # Upsert data into Pinecone
-    items_to_upsert = [{"id": str(index), "values": embedding, "metadata": {"text": text}} for index, (embedding, text) in enumerate(zip(embed, df['text'].tolist()))]
-    index.upsert(items_to_upsert)
+    # Process dataset and upsert data into Pinecone (only if not already done)
+    if 'data_upserted' not in st.session_state:
+        with st.spinner("Processing data and upserting to Pinecone..."):
+            df['text'] = df['text'].apply(text_splitter.split_text)
+            flattened_texts = [text for sublist in df['text'].tolist() for text in sublist]
+            
+            embed = OpenAIEmbeddings(api_key=OPENAI_API_KEY).embed_documents(flattened_texts)
+            # Upsert data into Pinecone
+            items_to_upsert = [{"id": str(index), "values": embedding, "metadata": {"text": text}} for index, (embedding, text) in enumerate(zip(embed, flattened_texts))]
+            index.upsert(items_to_upsert)
+            st.session_state.data_upserted = True
 
     # Streamlit input for user question
     question = st.text_input("Please enter your question:")
+    response = None  # Initialize response
 
     if st.button("Submit") and question:
-        # Query Pinecone and generate response
-        context = query_pinecone(question)
-        response = generate_response(context, question)
-    
-    # Rerun the app to update the display
-    st.rerun()
+        try:
+            # Query Pinecone and generate response
+            context = query_pinecone(question)
+            response = generate_response(context, question)
+        except Exception as e:
+            st.error(f"An error occurred: {e}")
+            response = "I'm sorry, there was an error generating a response."
+
+    # Output the response and append it to the history
+    if response:
+        st.session_state.history.append((question, response))
+        # Rerun the app to update the display
+        st.rerun()
     
     # Display the history in a scrollable container
     with st.container():
@@ -75,7 +82,7 @@ def main():
             st.write("---")  # Separator line
 
     # Output the response and append it to the history
-    st.session_state.history.append((question, response))
+    #st.session_state.history.append((question, response))
 
 def query_pinecone(question, top_k=5):
        # Generate the embedding for the question
