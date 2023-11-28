@@ -13,7 +13,7 @@ PINECONE_KEY = st.secrets["PINECONE_KEY"]
 if PINECONE_KEY is None:
     raise ValueError("Pinecone key not found. Please set the PINECONE_KEY environment variable.")
   
-pinecone.init(api_key=PINECONE_KEY, environment="gcp-starter", project_name= Chatbot, host= "https://chatbot-8b8kgcy.svc.gcp-starter.pinecone.io")
+pinecone.init(api_key=PINECONE_KEY, environment="gcp-starter", project_name="Chatbot", host= "https://chatbot-8b8kgcy.svc.gcp-starter.pinecone.io")
 
 OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
 if OPENAI_API_KEY is None:
