@@ -41,8 +41,13 @@ def main():
         dataset = load_dataset("jayantdocplix/falcon-small-test-dataset")
         df = dataset['train'].to_pandas().head(50)
 
-    # ... (other setup)
+    # Initialize text splitter and tokenizer
+    text_splitter = CharacterTextSplitter.from_huggingface_tokenizer(GPT2TokenizerFast.from_pretrained("gpt2-xl"), chunk_overlap=50)
 
+    # Initialize the session state for history if it doesn't exist
+    if 'history' not in st.session_state:
+        st.session_state.history = []
+        
     # Process dataset and upsert data into Pinecone (only if not already done)
     if 'data_upserted' not in st.session_state:
         with st.spinner("Processing data and upserting to Pinecone..."):
