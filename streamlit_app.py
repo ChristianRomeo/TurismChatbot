@@ -8,7 +8,7 @@ from transformers import GPT2TokenizerFast
 from langchain.text_splitter import CharacterTextSplitter
 
 
-index_name = "texst1"
+index_name = "chatbot"
 PINECONE_KEY = st.secrets["PINECONE_KEY"]
 if PINECONE_KEY is None:
     raise ValueError("Pinecone key not found. Please set the PINECONE_KEY environment variable.")
