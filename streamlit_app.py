@@ -73,7 +73,7 @@ def main():
             st.error(f"An error occurred: {e}")
             response = "I'm sorry, there was an error generating a response."
             # Output the exception for debugging purposes
-            st.write(e)  # Or use `st.exception(e)` to display the full traceback
+            st.exception(e)  # Or use `st.exception(e)` to display the full traceback
 
     # Output the response and append it to the history
     if response:
@@ -107,8 +107,12 @@ def query_pinecone(question, top_k=5):
 
 def generate_response(context, question):
     # Format the context and question into a prompt for the language model
-    prompt = "\n".join([" ".join(sub_list) for sub_list in context]) + "\n\n" + question
+    prompt = "\n".join([" ".join(sub_list) for sub_list in context])
 
+    # Limit the length of the prompt
+    prompt = prompt[:3096]  # or any other number less than 4097
+
+    prompt = prompt + "\n\n" + question
     # Generate the response using OpenAI GPT-3.5 Turbo
     chat_completion = openai.chat.completions.create(
         messages=[
