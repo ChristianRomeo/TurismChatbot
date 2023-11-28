@@ -8,7 +8,7 @@ from transformers import GPT2TokenizerFast
 from langchain.text_splitter import CharacterTextSplitter
 
 
-index_name = "texst1"
+index_name = "chatbot"
 PINECONE_KEY = st.secrets["PINECONE_KEY"]
 if PINECONE_KEY is None:
     raise ValueError("Pinecone key not found. Please set the PINECONE_KEY environment variable.")
@@ -30,6 +30,10 @@ system_prompt = (
 "cultural events, local cuisine, accommodations, transportation options, and hidden gems. "
 "It offers up-to-date and personalized information to help tourists make the most of their trip."
 )
+# Check if the index exists
+if index_name not in pinecone.list_indexes():
+    # If the index doesn't exist, create it
+    pinecone.create_index(index_name=index_name, metric='cosine', shards=1)
 index = pinecone.GRPCIndex(index_name)
 
 # Streamlit app
