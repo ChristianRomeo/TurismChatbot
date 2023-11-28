@@ -50,7 +50,7 @@ def main():
     # Process dataset
     df['text'] = df['text'].apply(text_splitter.split_text)
     flattened_texts = [text for sublist in df['text'].tolist() for text in sublist]
-    embed = OpenAIEmbeddings().embed_documents(flattened_texts)
+    embed = OpenAIEmbeddings(api_key=OPENAI_API_KEY).embed_documents(flattened_texts)
     
     # Upsert data into Pinecone
     items_to_upsert = [{"id": str(index), "values": embedding, "metadata": {"text": text}} for index, (embedding, text) in enumerate(zip(embed, df['text'].tolist()))]
@@ -79,7 +79,7 @@ def main():
 
 def query_pinecone(question, top_k=5):
        # Generate the embedding for the question
-       question_embedding = OpenAIEmbeddings().embed_query(question)
+       question_embedding = OpenAIEmbeddings(api_key=OPENAI_API_KEY).embed_query(question)
 
        # Query the Pinecone index with the question embedding to retrieve the top_k closest matches
        query_results = index.query(
