@@ -9,7 +9,7 @@ from langchain.text_splitter import CharacterTextSplitter
 
 
 index_name = "texst1"
-PINECONE_KEY = st.secrets["pinecone"]["PINECONE_KEY"]
+PINECONE_KEY = st.secrets["pinecone"]["API_KEY"]
 if PINECONE_KEY is None:
     raise ValueError("Pinecone key not found. Please set the PINECONE_KEY environment variable.")
 else:
@@ -17,7 +17,7 @@ else:
   
 pinecone.init(api_key=PINECONE_KEY, environment="gcp-starter")
 
-OPENAI_API_KEY = st.secrets["openai"]["OPENAI_API_KEY"]
+OPENAI_API_KEY = st.secrets["openai"]["API_KEY"]
 if OPENAI_API_KEY is None:
     raise ValueError("OpenAI key not found. Please set the OPENAI_API_KEY environment variable.")
   
